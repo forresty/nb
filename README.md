@@ -1,6 +1,9 @@
-# Nb
+# nb
 
-TODO: Write a gem description
+[![Code Climate](https://codeclimate.com/github/forresty/nb/badges/gpa.svg)](https://codeclimate.com/github/forresty/nb)
+[![Build Status](https://travis-ci.org/forresty/nb.svg?branch=master)](https://travis-ci.org/forresty/nb)
+
+yet another Naive Bayes library
 
 ## Installation
 
@@ -20,7 +23,16 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+bayes = NaiveBayes.new :love, :hate
+
+bayes.train :love, 'I', 'love', 'you'
+bayes.train :hate, 'I', 'hate', 'you'
+
+bayes.classifications(*%w{ I love you }).should == [[:love, 0.5], [:hate, 0.25]]
+bayes.classify(*%w{ I love you }).should == [:love, 0.5]
+bayes.classify(*%w{ love }).should == [:love, 0.5]
+```
 
 ## Contributing
 
