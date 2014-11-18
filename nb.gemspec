@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'nb/version'
+require 'nb'
 
 Gem::Specification.new do |spec|
   spec.name          = "nb"
-  spec.version       = Nb::VERSION
+  spec.version       = NaiveBayes::VERSION
   spec.authors       = ["Forrest Ye"]
   spec.email         = ["afu@forresty.com"]
   spec.summary       = %q{ yet another Naive Bayes library }
