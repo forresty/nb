@@ -15,7 +15,7 @@ class NaiveBayes
   end
 
   def train(category, *tokens)
-    tokens.each do |token|
+    tokens.uniq.each do |token|
       @tokens_count[category][token] += 1
     end
     @categories_count[category] += 1
@@ -37,8 +37,8 @@ class NaiveBayes
     raise 'not implemented yet'
   end
 
-  def probability_of_a_token(token)
-    raise 'not implemented yet'
+  def probability_of_a_token_in_category(token, category)
+    probability_of_a_token_given_a_category(token, category) / @categories.inject(0.0) { |r, c| r + probability_of_a_token_given_a_category(token, c) }
   end
 
   def probability_of_a_token_given_a_category(token, category)

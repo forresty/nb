@@ -8,7 +8,7 @@ describe NaiveBayes do
   it { should respond_to :probability_of_a_token_given_a_category }
   it { should respond_to :probability_of_tokens_given_a_category }
   it { should respond_to :probability_of_a_category }
-  it { should respond_to :probability_of_a_token }
+  it { should respond_to :probability_of_a_token_in_category }
   # it { should respond_to :total_number_of_tokens }
   it { should respond_to :total_number_of_items }
   it { should respond_to :top_tokens_of_category }
@@ -28,6 +28,24 @@ describe NaiveBayes do
   #     bayes.total_number_of_tokens.should == 10
   #   end
   # end
+
+  describe '#probability_of_a_token_in_category' do
+    it 'calculates correctly' do
+      bayes.train :love, 'I', 'love', 'you'
+      bayes.train :hate, 'I', 'hate', 'you'
+
+      bayes.probability_of_a_token_in_category('love', :love).should == 2.0/3  # 1 / ( 1 + 0.5 )
+      bayes.probability_of_a_token_in_category('hate', :love).should == 1.0/3  # 0.5 / ( 1 + 0.5 )
+      bayes.probability_of_a_token_in_category('I', :love).should == 0.5
+
+      bayes.train :love, 'hate', 'is', 'love'
+      bayes.train :love, 'hate', 'is', 'love'
+      bayes.train :love, 'hate', 'is', 'love'
+
+      bayes.probability_of_a_token_in_category('love', :love).should == 5.0/6  # 1 / ( 1 + 0.2 )
+      bayes.probability_of_a_token_in_category('hate', :love).should == 3.0/7  # 0.75 / ( 0.75 + 1 )
+    end
+  end
 
   describe '#total_number_of_items' do
     it 'calculates correctly' do
