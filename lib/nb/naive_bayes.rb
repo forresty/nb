@@ -34,7 +34,7 @@ class NaiveBayes
   end
 
   def top_tokens_of_category(category, count=20)
-    raise 'not implemented yet'
+    tokens_count[category].sort_by { |k,v| -v }.first(count)
   end
 
   def probability_of_a_token_in_category(token, category)
