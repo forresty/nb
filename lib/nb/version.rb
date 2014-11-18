@@ -1,0 +1,3 @@
+module Nb
+  VERSION = "0.0.1"
+end
