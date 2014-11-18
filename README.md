@@ -2,6 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/github/forresty/nb/badges/gpa.svg)](https://codeclimate.com/github/forresty/nb)
 [![Build Status](https://travis-ci.org/forresty/nb.svg?branch=master)](https://travis-ci.org/forresty/nb)
+[![Gem Version](https://badge.fury.io/rb/nb.svg)](http://badge.fury.io/rb/nb)
 
 yet another Naive Bayes library
 
