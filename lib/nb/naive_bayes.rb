@@ -1,4 +1,8 @@
+require "yaml"
+
 class NaiveBayes
+  attr_accessor :categories, :tokens_count, :categories_count
+
   def initialize(*categories)
     @categories = categories
     @tokens_count = {}
@@ -60,13 +64,27 @@ class NaiveBayes
     0.5 / (total_number_of_items.to_f / 2)
   end
 
-  def save
-    raise 'not implemented yet'
+  def data
+    {
+      :categories => @categories,
+      :tokens_count => @tokens_count,
+      :categories_count => @categories_count
+    }
+  end
+
+  def save(yaml_file)
+    File.write(yaml_file, data.to_yaml)
   end
 
   class << self
     def load_yaml(yaml_file)
-      raise 'not implemented yet'
+      data = YAML.load_file(yaml_file)
+
+      new.tap do |bayes|
+        bayes.categories = data[:categories]
+        bayes.tokens_count = data[:tokens_count]
+        bayes.categories_count = data[:categories_count]
+      end
     end
   end
 end
