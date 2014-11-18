@@ -64,6 +64,25 @@ describe NaiveBayes do
     end
   end
 
+  describe '#classifications' do
+    it 'calculates correctly' do
+      bayes.train :love, 'I', 'love', 'you'
+      bayes.train :hate, 'I', 'hate', 'you'
+
+      bayes.classifications(*%w{ I love you }).should == [[:love, 0.5], [:hate, 0.25]]
+      bayes.classify(*%w{ I love you }).should == [:love, 0.5]
+      bayes.classify(*%w{ love }).should == [:love, 0.5]
+
+      bayes.train :love, 'I', 'love', 'you'
+      bayes.train :love, 'I', 'love', 'you'
+      bayes.train :love, 'I', 'love', 'you'
+
+      bayes.classify(*%w{ I love you }).should == [:love, 0.8]
+      bayes.classify(*%w{ love }).should == [:love, 0.8]
+      bayes.classify(*%w{ only love }).first.should == :love #[:love, 0.16], (0.2 * 1) * 0.8
+    end
+  end
+
   describe 'class methods' do
     subject { NaiveBayes }
 
