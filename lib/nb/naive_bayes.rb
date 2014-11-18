@@ -15,7 +15,7 @@ class NaiveBayes
   end
 
   def train(category, *tokens)
-    tokens.uniq.each do |token|
+    tokens.each do |token|
       @tokens_count[category][token] += 1
     end
     @categories_count[category] += 1
