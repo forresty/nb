@@ -21,10 +21,6 @@ class NaiveBayes
     @categories_count[category] += 1
   end
 
-  def top_tokens_of_category(category, count=20)
-
-  end
-
   def classify(*tokens)
     classifications(*tokens).first
   end
@@ -35,6 +31,14 @@ class NaiveBayes
       scores[category] = probability_of_tokens_given_a_category(tokens, category) * probability_of_a_category(category)
     end
     scores.sort_by { |k, v| -v }
+  end
+
+  def top_tokens_of_category(category, count=20)
+    raise 'not implemented yet'
+  end
+
+  def probability_of_a_token(token)
+    raise 'not implemented yet'
   end
 
   def probability_of_a_token_given_a_category(token, category)

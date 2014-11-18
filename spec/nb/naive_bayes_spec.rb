@@ -8,6 +8,7 @@ describe NaiveBayes do
   it { should respond_to :probability_of_a_token_given_a_category }
   it { should respond_to :probability_of_tokens_given_a_category }
   it { should respond_to :probability_of_a_category }
+  it { should respond_to :probability_of_a_token }
   # it { should respond_to :total_number_of_tokens }
   it { should respond_to :total_number_of_items }
   it { should respond_to :top_tokens_of_category }
