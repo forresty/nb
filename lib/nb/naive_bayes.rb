@@ -21,6 +21,10 @@ class NaiveBayes
     @categories_count[category] += 1
   end
 
+  def top_tokens_of_category(category, count=20)
+
+  end
+
   def classify(*tokens)
     classifications(*tokens).first
   end
