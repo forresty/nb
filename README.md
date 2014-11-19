@@ -61,6 +61,23 @@ bayes.classify(*%w{ love }).should == [:love, 0.5]
 +------------+------+--------------------+
 ```
 
+### support default category
+
+in case the probability of each category is too low:
+
+```ruby
+@bayes = NaiveBayes.new :spam, :ham
+@bayes.default_category = :ham
+```
+
+```
+bayes filter mark as spam: false
+bayes classifications: [[:ham, 5.044818725004143e-80], [:spam, 1.938475275819746e-119]]
+
+bayes filter mark as spam: false
+bayes classifications: [[:spam, 0.0], [:ham, 0.0]]
+```
+
 ## Credits
 
 - [classifier gem](https://github.com/cardmagic/classifier)
