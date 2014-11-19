@@ -61,6 +61,12 @@ bayes.classify(*%w{ love }).should == [:love, 0.5]
 +------------+------+--------------------+
 ```
 
+## Credits
+
+- [classifier gem](https://github.com/cardmagic/classifier)
+- [naive_bayes gem](https://github.com/reddavis/Naive-Bayes)
+- [nbayes gem](https://github.com/oasic/nbayes)
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/nb/fork )
