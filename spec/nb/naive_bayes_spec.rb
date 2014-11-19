@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe NaiveBayes do
   it { should respond_to :train }
+  it { should respond_to :untrain }
   it { should respond_to :save }
   it { should respond_to :classify }
   it { should respond_to :classifications }

@@ -21,6 +21,13 @@ class NaiveBayes
     @categories_count[category] += 1
   end
 
+  def untrain(category, *tokens)
+    tokens.uniq.each do |token|
+      @tokens_count[category][token] -= 1
+    end
+    @categories_count[category] -= 1
+  end
+
   def classify(*tokens)
     classifications(*tokens).first
   end
