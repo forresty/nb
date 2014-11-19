@@ -1,12 +1,13 @@
 require "yaml"
 
 class NaiveBayes
-  attr_accessor :categories, :tokens_count, :categories_count
+  attr_accessor :categories, :tokens_count, :categories_count, :default_category
 
   def initialize(*categories)
     @categories = categories
     @tokens_count = {}
     @categories_count = {}
+    @default_category = @categories.first
 
     categories.each do |category|
       @tokens_count[category] = Hash.new(0)
@@ -29,7 +30,13 @@ class NaiveBayes
   end
 
   def classify(*tokens)
-    classifications(*tokens).first
+    result = classifications(*tokens).first
+
+    if result.last == 0.0
+      [@default_category, 0.0]
+    else
+      result
+    end
   end
 
   def classifications(*tokens)
