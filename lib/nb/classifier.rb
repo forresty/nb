@@ -16,25 +16,17 @@ module NaiveBayes
 
       case options[:backend]
       when :memory
-        @backend = Backend::Memory.new
+        @backend = Backend::Memory.new(categories)
       when :redis
         options[:host] ||= 'localhost'
         options[:port] ||= 6379
 
-        @backend = Backend::Redis.new(host: options[:host], port: options[:port])
+        @backend = Backend::Redis.new(categories, host: options[:host], port: options[:port])
       else
         raise "unsupported backend: #{options[:backend]}"
       end
 
-      backend.categories = categories
-      backend.tokens_count = {}
-      backend.categories_count = {}
       @default_category = categories.first
-
-      categories.each do |category|
-        backend.tokens_count[category] = Hash.new(0)
-        backend.categories_count[category] = 0
-      end
     end
 
     def train(category, *tokens)
@@ -119,15 +111,17 @@ module NaiveBayes
     end
 
     def save(yaml_file)
+      raise 'only memory backend can save' unless backend == :memory
+
       File.write(yaml_file, data.to_yaml)
     end
 
     class << self
+      # will load into a memory-backed classifier
       def load_yaml(yaml_file)
         data = YAML.load_file(yaml_file)
 
-        new.tap do |classifier|
-          classifier.categories = data[:categories]
+        new(data[:categories], backend: :memory).tap do |classifier|
           classifier.tokens_count = data[:tokens_count]
           classifier.categories_count = data[:categories_count]
         end

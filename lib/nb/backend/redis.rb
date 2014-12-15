@@ -5,7 +5,9 @@ module NaiveBayes
     class Redis
       attr_accessor :categories, :tokens_count, :categories_count
 
-      def initialize(options={})
+      def initialize(categories, options={})
+        @categories = categories
+
         @redis = ::Redis.new(options)
       end
     end
