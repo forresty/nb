@@ -10,6 +10,14 @@ module NaiveBayes
 
         @redis = ::Redis.new(options)
       end
+
+      def train(category, *tokens)
+        raise 'not implemented yet'
+      end
+
+      def untrain(category, *tokens)
+        raise 'not implemented yet'
+      end
     end
   end
 end

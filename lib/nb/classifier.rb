@@ -30,19 +30,11 @@ module NaiveBayes
     end
 
     def train(category, *tokens)
-      tokens.uniq.each do |token|
-        backend.tokens_count[category][token] += 1
-      end
-
-      backend.categories_count[category] += 1
+      backend.train(category, *tokens)
     end
 
     def untrain(category, *tokens)
-      tokens.uniq.each do |token|
-        backend.tokens_count[category][token] -= 1
-      end
-
-      backend.categories_count[category] -= 1
+      backend.untrain(category, *tokens)
     end
 
     def classify(*tokens)
