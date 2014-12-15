@@ -2,7 +2,7 @@ require "yaml"
 
 module NaiveBayes
   class Classifier
-    attr_accessor :categories, :tokens_count, :categories_count, :default_category
+    attr_accessor :default_category
     attr_accessor :backend
 
     def initialize(*categories)
@@ -14,29 +14,43 @@ module NaiveBayes
 
       options[:backend] ||= :memory
 
-      @categories = categories
-      @tokens_count = {}
-      @categories_count = {}
-      @default_category = @categories.first
+      case options[:backend]
+      when :memory
+        @backend = Backend::Memory.new
+      when :redis
+        options[:host] ||= 'localhost'
+        options[:port] ||= 6379
+
+        @backend = Backend::Redis.new(host: options[:host], port: options[:port])
+      else
+        raise "unsupported backend: #{options[:backend]}"
+      end
+
+      backend.categories = categories
+      backend.tokens_count = {}
+      backend.categories_count = {}
+      @default_category = categories.first
 
       categories.each do |category|
-        @tokens_count[category] = Hash.new(0)
-        @categories_count[category] = 0
+        backend.tokens_count[category] = Hash.new(0)
+        backend.categories_count[category] = 0
       end
     end
 
     def train(category, *tokens)
       tokens.uniq.each do |token|
-        @tokens_count[category][token] += 1
+        backend.tokens_count[category][token] += 1
       end
-      @categories_count[category] += 1
+
+      backend.categories_count[category] += 1
     end
 
     def untrain(category, *tokens)
       tokens.uniq.each do |token|
-        @tokens_count[category][token] -= 1
+        backend.tokens_count[category][token] -= 1
       end
-      @categories_count[category] -= 1
+
+      backend.categories_count[category] -= 1
     end
 
     def classify(*tokens)
@@ -51,7 +65,7 @@ module NaiveBayes
 
     def classifications(*tokens)
       scores = {}
-      @categories.each do |category|
+      backend.categories.each do |category|
         scores[category] = probability_of_tokens_given_a_category(tokens, category) * probability_of_a_category(category)
       end
       scores.sort_by { |k, v| -v }
@@ -62,13 +76,13 @@ module NaiveBayes
     end
 
     def probability_of_a_token_in_category(token, category)
-      probability_of_a_token_given_a_category(token, category) / @categories.inject(0.0) { |r, c| r + probability_of_a_token_given_a_category(token, c) }
+      probability_of_a_token_given_a_category(token, category) / backend.categories.inject(0.0) { |r, c| r + probability_of_a_token_given_a_category(token, c) }
     end
 
     def probability_of_a_token_given_a_category(token, category)
-      return assumed_probability if @tokens_count[category][token] == 0
+      return assumed_probability if backend.tokens_count[category][token] == 0
 
-      @tokens_count[category][token].to_f / @categories_count[category]
+      backend.tokens_count[category][token].to_f / backend.categories_count[category]
     end
 
     def probability_of_tokens_given_a_category(tokens, category)
@@ -78,7 +92,7 @@ module NaiveBayes
     end
 
     def probability_of_a_category(category)
-      @categories_count[category].to_f / total_number_of_items
+      backend.categories_count[category].to_f / total_number_of_items
     end
 
     # def total_number_of_tokens
@@ -86,7 +100,7 @@ module NaiveBayes
     # end
 
     def total_number_of_items
-      @categories_count.values.inject(&:+)
+      backend.categories_count.values.inject(&:+)
     end
 
     # If we have only trained a little bit a class may not have had a feature yet
@@ -98,9 +112,9 @@ module NaiveBayes
 
     def data
       {
-        :categories => @categories,
-        :tokens_count => @tokens_count,
-        :categories_count => @categories_count
+        :categories => backend.categories,
+        :tokens_count => backend.tokens_count,
+        :categories_count => backend.categories_count
       }
     end
 
@@ -112,10 +126,10 @@ module NaiveBayes
       def load_yaml(yaml_file)
         data = YAML.load_file(yaml_file)
 
-        new.tap do |bayes|
-          bayes.categories = data[:categories]
-          bayes.tokens_count = data[:tokens_count]
-          bayes.categories_count = data[:categories_count]
+        new.tap do |classifier|
+          classifier.categories = data[:categories]
+          classifier.tokens_count = data[:tokens_count]
+          classifier.categories_count = data[:categories_count]
         end
       end
     end
