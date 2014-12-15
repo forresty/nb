@@ -7,7 +7,7 @@ module NaiveBayes
 
     def initialize(*categories)
       if categories.last.is_a?(Hash)
-        options = categories.unshift
+        options = categories.pop
       else
         options = {}
       end
