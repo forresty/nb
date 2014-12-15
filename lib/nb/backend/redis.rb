@@ -18,6 +18,14 @@ module NaiveBayes
           @redis.hset @hash_name, key, value
         end
 
+        def incr(key)
+          @redis.hincrby @hash_name, key, 1
+        end
+
+        def decr(key)
+          @redis.hdecrby @hash_name, key, 1
+        end
+
         def values
           @redis.hvals(@hash_name).map(&:to_f)
         end
@@ -40,7 +48,7 @@ module NaiveBayes
 
         @_categories = categories
 
-        clear!
+        setup
       end
 
       def categories
@@ -52,16 +60,16 @@ module NaiveBayes
       end
 
       def tokens_count
-        unless @tokens_count
-          @tokens_count = Hash.new
-        end
-
-        @tokens_count
+        @tokens_count ||= Hash.new
       end
 
       def clear!
         @redis.flushall
 
+        setup
+      end
+
+      def setup
         @redis.sadd "nb:set:categories", @_categories
 
         categories.each do |category|
@@ -69,23 +77,22 @@ module NaiveBayes
           self.tokens_count[category] = RedisHash.new(@redis, "nb:hash:tokens_count:#{category}")
           self.categories_count[category] = 0
         end
-
       end
 
       def train(category, *tokens)
         tokens.uniq.each do |token|
-          self.tokens_count[category][token] += 1
+          self.tokens_count[category].incr(token)
         end
 
-        self.categories_count[category] += 1
+        self.categories_count.incr(category)
       end
 
       def untrain(category, *tokens)
         tokens.uniq.each do |token|
-          self.tokens_count[category][token] -= 1
+          self.tokens_count[category][token].decr(token)
         end
 
-        self.categories_count[category] -= 1
+        self.categories_count.decr(category)
       end
     end
   end

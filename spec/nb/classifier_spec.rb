@@ -45,6 +45,19 @@ module NaiveBayes
         #   end
         # end
 
+        describe '#categories_count and #tokens_count' do
+          it 'must get it right' do
+            subject.backend.categories_count[:love].should == 0
+
+            subject.train :love, 'I', 'love', 'you'
+            subject.train :hate, 'I', 'hate', 'you'
+
+            subject.backend.categories_count[:love].should == 1
+            subject.backend.tokens_count[:hate]['you'].should == 1
+            subject.backend.tokens_count[:hate]['love'].should == 0
+          end
+        end
+
         describe '#probability_of_a_token_in_category' do
           it 'calculates correctly' do
             subject.train :love, 'I', 'love', 'you'
