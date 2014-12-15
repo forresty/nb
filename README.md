@@ -25,19 +25,19 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-bayes = NaiveBayes.new :love, :hate
+classifier = NaiveBayes::Classifier.new :love, :hate
 
-bayes.train :love, 'I', 'love', 'you'
-bayes.train :hate, 'I', 'hate', 'you'
+classifier.train :love, 'I', 'love', 'you'
+classifier.train :hate, 'I', 'hate', 'you'
 
-bayes.classifications(*%w{ I love you }).should == [[:love, 0.5], [:hate, 0.25]]
-bayes.classify(*%w{ I love you }).should == [:love, 0.5]
-bayes.classify(*%w{ love }).should == [:love, 0.5]
+classifier.classifications(*%w{ I love you }).should == [[:love, 0.5], [:hate, 0.25]]
+classifier.classify(*%w{ I love you }).should == [:love, 0.5]
+classifier.classify(*%w{ love }).should == [:love, 0.5]
 ```
 
 ### ability to view top tokens
 
-`bayes.top_tokens_of_category(:spam)`
+`classifier.top_tokens_of_category(:spam)`
 
 ```
 +------------+------+--------------------+
@@ -66,8 +66,14 @@ bayes.classify(*%w{ love }).should == [:love, 0.5]
 in case the probability of each category is too low:
 
 ```ruby
-@bayes = NaiveBayes.new :spam, :ham
-@bayes.default_category = :ham
+@classifier = NaiveBayes::Classifer.new :spam, :ham
+@classifier.default_category = :ham
+```
+
+specify a backend storage engine, currently only memory and redis are supported
+
+```ruby
+@classifier = NaiveBayes::Classifer.new(:spam, :ham, backend: :memory)
 ```
 
 ```

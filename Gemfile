@@ -7,4 +7,7 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec'
   gem 'simplecov', require: false
+  gem 'fakeredis'
 end
+
+gem 'redis'
