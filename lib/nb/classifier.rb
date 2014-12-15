@@ -3,8 +3,17 @@ require "yaml"
 module NaiveBayes
   class Classifier
     attr_accessor :categories, :tokens_count, :categories_count, :default_category
+    attr_accessor :backend
 
     def initialize(*categories)
+      if categories.last.is_a?(Hash)
+        options = categories.unshift
+      else
+        options = {}
+      end
+
+      options[:backend] ||= :memory
+
       @categories = categories
       @tokens_count = {}
       @categories_count = {}

@@ -70,6 +70,12 @@ in case the probability of each category is too low:
 @classifier.default_category = :ham
 ```
 
+specify a backend storage engine, currently only memory and redis are supported
+
+```ruby
+@classifier = NaiveBayes::Classifer.new(:spam, :ham, backend: :memory)
+```
+
 ```
 bayes filter mark as spam: false
 bayes classifications: [[:ham, 5.044818725004143e-80], [:spam, 1.938475275819746e-119]]
