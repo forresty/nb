@@ -5,10 +5,15 @@ module NaiveBayes
 
       def initialize(categories)
         @categories = categories
+
+        clear!
+      end
+
+      def clear!
         @tokens_count = {}
         @categories_count = {}
 
-        categories.each do |category|
+        @categories.each do |category|
           @tokens_count[category] = Hash.new(0)
           @categories_count[category] = 0
         end

@@ -21,21 +21,26 @@ module NaiveBayes
         def values
           @redis.hvals(@hash_name).map(&:to_f)
         end
-      end
 
-      attr_accessor :categories, :tokens_count
+        def map
+          out = []
+
+          if block_given?
+            @redis.hkeys(@hash_name).each { |k| out << yield(k, self.[](k)) }
+          else
+            out = to_enum :map
+          end
+
+          out
+        end
+      end
 
       def initialize(categories, options={})
         @redis = ::Redis.new(options)
 
-        @redis.sadd "nb:set:categories", categories
+        @_categories = categories
 
-        @tokens_count = {}
-
-        categories.each do |category|
-          @tokens_count[category] = Hash.new(0)
-          self.categories_count[category] = 0
-        end
+        clear!
       end
 
       def categories
@@ -46,9 +51,30 @@ module NaiveBayes
         @categories_count ||= RedisHash.new(@redis, "nb:hash:categories_count")
       end
 
+      def tokens_count
+        unless @tokens_count
+          @tokens_count = Hash.new
+        end
+
+        @tokens_count
+      end
+
+      def clear!
+        @redis.flushall
+
+        @redis.sadd "nb:set:categories", @_categories
+
+        categories.each do |category|
+          # @tokens_count[category] = Hash.new(0)
+          self.tokens_count[category] = RedisHash.new(@redis, "nb:hash:tokens_count:#{category}")
+          self.categories_count[category] = 0
+        end
+
+      end
+
       def train(category, *tokens)
         tokens.uniq.each do |token|
-          @tokens_count[category][token] += 1
+          self.tokens_count[category][token] += 1
         end
 
         self.categories_count[category] += 1
@@ -56,7 +82,7 @@ module NaiveBayes
 
       def untrain(category, *tokens)
         tokens.uniq.each do |token|
-          @tokens_count[category][token] -= 1
+          self.tokens_count[category][token] -= 1
         end
 
         self.categories_count[category] -= 1

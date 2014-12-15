@@ -37,6 +37,10 @@ module NaiveBayes
       backend.untrain(category, *tokens)
     end
 
+    def clear!
+      backend.clear!
+    end
+
     def classify(*tokens)
       result = classifications(*tokens).first
 

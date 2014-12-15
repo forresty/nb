@@ -19,12 +19,18 @@ module NaiveBayes
     it { should respond_to :top_tokens_of_category }
     it { should respond_to :default_category= }
 
+    it { should respond_to :clear! }
+
     [:memory, :redis].each do |backend|
       describe "with backend #{backend}" do
 
         let(:classifier) { Classifier.new(:love, :hate, backend: backend) }
 
         subject { classifier }
+
+        before(:each) do
+          subject.clear!
+        end
 
         # describe '#total_number_of_tokens' do
         #   it 'calculates correctly' do
