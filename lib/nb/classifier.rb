@@ -56,7 +56,7 @@ module NaiveBayes
     end
 
     def top_tokens_of_category(category, count=20)
-      tokens_count[category].map { |k, v| [k, v, probability_of_a_token_in_category(k, category)] }.sort_by { |i| -i.last }.first(count)
+      backend.tokens_count[category].map { |k, v| [k, v, probability_of_a_token_in_category(k, category)] }.sort_by { |i| -i.last }.first(count)
     end
 
     def probability_of_a_token_in_category(token, category)

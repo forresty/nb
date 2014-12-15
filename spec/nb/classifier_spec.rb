@@ -106,6 +106,15 @@ module NaiveBayes
       end
     end
 
+    describe '#top_tokens_of_category' do
+      it 'finds to tokens' do
+        subject.train :love, 'I', 'love', 'you'
+        subject.train :hate, 'I', 'hate', 'you'
+
+        subject.top_tokens_of_category(:love).count.should == 3
+      end
+    end
+
     describe 'class methods' do
       subject { Classifier }
 
