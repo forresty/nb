@@ -1,3 +1,3 @@
-class NaiveBayes
+module NaiveBayes
   VERSION = "0.0.4"
 end

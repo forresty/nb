@@ -1,1 +1,1 @@
-require "nb/naive_bayes"
+require_relative "nb/classifier"
