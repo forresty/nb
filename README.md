@@ -100,6 +100,10 @@ bayes classifications: [[:spam, 0.0], [:ham, 0.0]]
 
 ## Changelog
 
+### 0.1.1 / 2014-12-15
+
+- fix redis backend
+
 ### 0.1.0 / 2014-12-15
 
 - init implementation of redis backend
