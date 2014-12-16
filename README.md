@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/forresty/nb.svg?branch=master)](https://travis-ci.org/forresty/nb)
 [![Gem Version](https://badge.fury.io/rb/nb.svg)](http://badge.fury.io/rb/nb)
 
-yet another Naive Bayes library
+yet another Naive Bayes library with support of memory and Redis backend
 
 ## Installation
 
@@ -35,7 +35,7 @@ classifier.classify(*%w{ I love you }).should == [:love, 0.5]
 classifier.classify(*%w{ love }).should == [:love, 0.5]
 ```
 
-### ability to view top tokens
+### Ability to view top tokens
 
 `classifier.top_tokens_of_category(:spam)`
 
@@ -61,19 +61,29 @@ classifier.classify(*%w{ love }).should == [:love, 0.5]
 +------------+------+--------------------+
 ```
 
-### support default category
+### Use Redis backend
+
+```ruby
+classifier = Classifier.new(:spam, :ham, backend: :redis, host: 'localhost', port: 30000)
+```
+
+it generates 2 + N keys in redis:
+
+```
+127.0.0.1:30000> keys *
+1) "nb:hash:tokens_count:ham"
+2) "nb:hash:tokens_count:spam"
+3) "nb:set:categories"
+4) "nb:hash:categories_count"
+```
+
+### Support default category
 
 in case the probability of each category is too low:
 
 ```ruby
 @classifier = NaiveBayes::Classifer.new :spam, :ham
 @classifier.default_category = :ham
-```
-
-specify a backend storage engine, currently only memory and redis are supported
-
-```ruby
-@classifier = NaiveBayes::Classifer.new(:spam, :ham, backend: :memory)
 ```
 
 ```
