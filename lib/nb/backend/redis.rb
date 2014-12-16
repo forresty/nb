@@ -67,6 +67,10 @@ module NaiveBayes
         @redis.flushall
 
         setup
+
+        categories.each do |category|
+          self.categories_count[category] = 0
+        end
       end
 
       def setup
@@ -75,7 +79,6 @@ module NaiveBayes
         categories.each do |category|
           # @tokens_count[category] = Hash.new(0)
           self.tokens_count[category] = RedisHash.new(@redis, "nb:hash:tokens_count:#{category}")
-          self.categories_count[category] = 0
         end
       end
 
